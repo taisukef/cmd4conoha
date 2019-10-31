@@ -1,4 +1,4 @@
-// see also https://manage.conoha.jp/API/
+// https://manage.conoha.jp/API/
 exports.username = "xxxx00000"
 exports.password = "xxxxxxxxxxxxxxxx"
 exports.tenant_id = "xxxxxxxxxxxxxxx"
