@@ -167,15 +167,33 @@ const getServerByIP = async function(tokens, ip) {
 	}
 	return null
 }
+const getBilling = async function(tokens) {
+	const url = getEndpoint(tokens, "account") + "/billing-invoices"
+	const data = await fetchJSON(url, { "X-Auth-Token": tokens.access.token.id })
+	return data
+}
+const getBillingInvoice = async function(tokens, invoice_id) {
+	const url = getEndpoint(tokens, "account") + "/billing-invoices/" + invoice_id
+	const data = await fetchJSON(url, { "X-Auth-Token": tokens.access.token.id })
+	return data
+}
+const getOrderItems = async function(tokens) {
+	const url = getEndpoint(tokens, "account") + "/order-items"
+	const data = await fetchJSON(url, { "X-Auth-Token": tokens.access.token.id })
+	return data
+}
+
 
 const env = require('./env')
 
 const main = async function() {
 	if (process.argv.length < 2) {
 		console.log("ex)")
-		console.log("$ node cmd4conoha.js add")
+		console.log("$ node cmd4conoha.js images")
+		console.log("$ node cmd4conoha.js add [image_name]")
 		console.log("$ node cmd4conoha.js stop [ip]")
 		console.log("$ node cmd4conoha.js delete [ip]")
+		console.log("etc...")
 		return
 	}
 	const action = process.argv[2]
@@ -223,6 +241,16 @@ const main = async function() {
 	} else if (action == 'networks') {
 		const networks = await getNetworks(tokens)
 		console.log(networks)
+	} else if (action == 'billing') {
+		const invoices = await getBilling(tokens)
+		console.log(invoices)
+		for (const iv of invoices.billing_invoices) {
+			const aiv = await getBillingInvoice(tokens, iv.invoice_id)
+			for (const item of aiv.billing_invoice.items) {
+				console.log(item)
+			}
+		}
+		//console.log(await getOrderItems(tokens))
 	}
 }
 
